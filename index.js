@@ -1,11 +1,11 @@
 'use strict';
 
-var extend  = require('extend');
+var extend = require('extend');
 var isArray = require('util').isArray;
-var isDate  = require('util').isDate;
+var isDate = require('util').isDate;
 var sprintf = require("sprintf-js").sprintf;
-var events  = require('events');
-var except  = require('except');
+var events = require('events');
+var except = require('except');
 
 var strftime = require('./strftime');
 
@@ -24,7 +24,9 @@ function isPlainObject(val) {
   if (val === null) {
     return false;
   }
-  return Object.prototype.toString.call(val) === '[object Object]' || Object.prototype.toString.call(val) === '[object String]';
+  return Object.prototype.toString.call(val) === '[object Object]'
+    || Object.prototype.toString.call(val) === '[object String]'
+    || Object.prototype.toString.call(val) === '[object Module]';
 }
 
 function isSymbol(key) {
@@ -36,7 +38,7 @@ function hasOwnProp(obj, key) {
 }
 
 function getEntry(translations, keys) {
-  return keys.reduce(function(result, key) {
+  return keys.reduce(function (result, key) {
     if (isPlainObject(result) && hasOwnProp(result, key)) {
       return result[key];
     } else {
@@ -58,8 +60,8 @@ function Counterpart() {
     normalizedKeys: {},
     separator: '.',
     keepTrailingDot: false,
-    keyTransformer: function(key) { return key; },
-    generateMissingEntry: function(key) { return 'missing translation: ' + key; }
+    keyTransformer: function (key) { return key; },
+    generateMissingEntry: function (key) { return 'missing translation: ' + key; }
   };
 
   this.registerTranslations('en', require('./locales/en'));
@@ -69,11 +71,11 @@ function Counterpart() {
 Counterpart.prototype = events.EventEmitter.prototype;
 Counterpart.prototype.constructor = events.EventEmitter;
 
-Counterpart.prototype.getLocale = function() {
+Counterpart.prototype.getLocale = function () {
   return this._registry.locale;
 };
 
-Counterpart.prototype.setLocale = function(value) {
+Counterpart.prototype.setLocale = function (value) {
   var previous = this._registry.locale;
 
   if (previous != value) {
@@ -84,108 +86,108 @@ Counterpart.prototype.setLocale = function(value) {
   return previous;
 };
 
-Counterpart.prototype.getFallbackLocale = function() {
+Counterpart.prototype.getFallbackLocale = function () {
   return this._registry.fallbackLocales;
 };
 
-Counterpart.prototype.setFallbackLocale = function(value) {
+Counterpart.prototype.setFallbackLocale = function (value) {
   var previous = this._registry.fallbackLocales;
   this._registry.fallbackLocales = [].concat(value || []);
   return previous;
 };
 
-Counterpart.prototype.getAvailableLocales = function() {
+Counterpart.prototype.getAvailableLocales = function () {
   return this._registry.availableLocales || Object.keys(this._registry.translations);
 };
 
-Counterpart.prototype.setAvailableLocales = function(value) {
+Counterpart.prototype.setAvailableLocales = function (value) {
   var previous = this.getAvailableLocales();
   this._registry.availableLocales = value;
   return previous;
 };
 
-Counterpart.prototype.getSeparator = function() {
+Counterpart.prototype.getSeparator = function () {
   return this._registry.separator;
 };
 
-Counterpart.prototype.setSeparator = function(value) {
+Counterpart.prototype.setSeparator = function (value) {
   var previous = this._registry.separator;
   this._registry.separator = value;
   return previous;
 };
 
-Counterpart.prototype.setInterpolate = function(value) {
+Counterpart.prototype.setInterpolate = function (value) {
   var previous = this._registry.interpolate;
   this._registry.interpolate = value;
   return previous;
 };
 
-Counterpart.prototype.getInterpolate = function() {
+Counterpart.prototype.getInterpolate = function () {
   return this._registry.interpolate;
 };
 
-Counterpart.prototype.setKeyTransformer = function(value) {
+Counterpart.prototype.setKeyTransformer = function (value) {
   var previous = this._registry.keyTransformer;
   this._registry.keyTransformer = value;
   return previous;
 };
 
-Counterpart.prototype.getKeyTransformer = function() {
+Counterpart.prototype.getKeyTransformer = function () {
   return this._registry.keyTransformer;
 };
 
-Counterpart.prototype.setMissingEntryGenerator = function(value) {
+Counterpart.prototype.setMissingEntryGenerator = function (value) {
   var previous = this._registry.generateMissingEntry;
   this._registry.generateMissingEntry = value;
   return previous;
 };
 
-Counterpart.prototype.getMissingEntryGenerator = function() {
+Counterpart.prototype.getMissingEntryGenerator = function () {
   return this._registry.generateMissingEntry;
 };
 
-Counterpart.prototype.registerTranslations = function(locale, data) {
+Counterpart.prototype.registerTranslations = function (locale, data) {
   var translations = {};
   translations[locale] = data;
   extend(true, this._registry.translations, translations);
   return translations;
 };
 
-Counterpart.prototype.registerInterpolations = function(data) {
+Counterpart.prototype.registerInterpolations = function (data) {
   return extend(true, this._registry.interpolations, data);
 };
 
 Counterpart.prototype.onLocaleChange =
-Counterpart.prototype.addLocaleChangeListener = function(callback) {
-  this.addListener('localechange', callback);
-};
+  Counterpart.prototype.addLocaleChangeListener = function (callback) {
+    this.addListener('localechange', callback);
+  };
 
 Counterpart.prototype.offLocaleChange =
-Counterpart.prototype.removeLocaleChangeListener = function(callback) {
-  this.removeListener('localechange', callback);
-};
+  Counterpart.prototype.removeLocaleChangeListener = function (callback) {
+    this.removeListener('localechange', callback);
+  };
 
 Counterpart.prototype.onTranslationNotFound =
-Counterpart.prototype.addTranslationNotFoundListener = function(callback) {
-  this.addListener('translationnotfound', callback);
-};
+  Counterpart.prototype.addTranslationNotFoundListener = function (callback) {
+    this.addListener('translationnotfound', callback);
+  };
 
 Counterpart.prototype.offTranslationNotFound =
-Counterpart.prototype.removeTranslationNotFoundListener = function(callback) {
-  this.removeListener('translationnotfound', callback);
-};
+  Counterpart.prototype.removeTranslationNotFoundListener = function (callback) {
+    this.removeListener('translationnotfound', callback);
+  };
 
 Counterpart.prototype.onError =
-Counterpart.prototype.addErrorListener = function(callback) {
-  this.addListener('error', callback);
-};
+  Counterpart.prototype.addErrorListener = function (callback) {
+    this.addListener('error', callback);
+  };
 
 Counterpart.prototype.offError =
-Counterpart.prototype.removeErrorListener = function(callback) {
-  this.removeListener('error', callback);
-};
+  Counterpart.prototype.removeErrorListener = function (callback) {
+    this.removeListener('error', callback);
+  };
 
-Counterpart.prototype.translate = function(key, options) {
+Counterpart.prototype.translate = function (key, options) {
   if (!isArray(key) && !isString(key) || !key.length) {
     throw new Error('invalid argument: key');
   }
@@ -248,25 +250,25 @@ Counterpart.prototype.translate = function(key, options) {
   return entry;
 };
 
-Counterpart.prototype.localize = function(object, options) {
+Counterpart.prototype.localize = function (object, options) {
   if (!isDate(object)) {
     throw new Error('invalid argument: object must be a date');
   }
 
   options = extend(true, {}, options);
 
-  var locale  = options.locale  || this._registry.locale;
-  var scope   = options.scope   || translationScope;
-  var type    = options.type    || 'datetime';
-  var format  = options.format  || 'default';
+  var locale = options.locale || this._registry.locale;
+  var scope = options.scope || translationScope;
+  var type = options.type || 'datetime';
+  var format = options.format || 'default';
 
   options = { locale: locale, scope: scope, interpolate: false };
-  format  = this.translate(['formats', type, format], extend(true, {}, options));
+  format = this.translate(['formats', type, format], extend(true, {}, options));
 
   return strftime(object, format, this.translate('names', options));
 };
 
-Counterpart.prototype._pluralize = function(locale, entry, count) {
+Counterpart.prototype._pluralize = function (locale, entry, count) {
   if (typeof entry !== 'object' || entry === null || typeof count !== 'number') {
     return entry;
   }
@@ -280,7 +282,7 @@ Counterpart.prototype._pluralize = function(locale, entry, count) {
   return pluralizeFunc(entry, count);
 };
 
-Counterpart.prototype.withLocale = function(locale, callback, context) {
+Counterpart.prototype.withLocale = function (locale, callback, context) {
   var previous = this._registry.locale;
   this._registry.locale = locale;
   var result = callback.call(context);
@@ -288,7 +290,7 @@ Counterpart.prototype.withLocale = function(locale, callback, context) {
   return result;
 };
 
-Counterpart.prototype.withScope = function(scope, callback, context) {
+Counterpart.prototype.withScope = function (scope, callback, context) {
   var previous = this._registry.scope;
   this._registry.scope = scope;
   var result = callback.call(context);
@@ -296,14 +298,14 @@ Counterpart.prototype.withScope = function(scope, callback, context) {
   return result;
 };
 
-Counterpart.prototype.withSeparator = function(separator, callback, context) {
+Counterpart.prototype.withSeparator = function (separator, callback, context) {
   var previous = this.setSeparator(separator);
   var result = callback.call(context);
   this.setSeparator(previous);
   return result;
 };
 
-Counterpart.prototype._normalizeKeys = function(locale, scope, key, separator) {
+Counterpart.prototype._normalizeKeys = function (locale, scope, key, separator) {
   var keys = [];
 
   keys = keys.concat(this._normalizeKey(locale, separator));
@@ -313,12 +315,12 @@ Counterpart.prototype._normalizeKeys = function(locale, scope, key, separator) {
   return keys;
 };
 
-Counterpart.prototype._normalizeKey = function(key, separator) {
+Counterpart.prototype._normalizeKey = function (key, separator) {
   this._registry.normalizedKeys[separator] = this._registry.normalizedKeys[separator] || {};
 
-  this._registry.normalizedKeys[separator][key] = this._registry.normalizedKeys[separator][key] || (function(key) {
+  this._registry.normalizedKeys[separator][key] = this._registry.normalizedKeys[separator][key] || (function (key) {
     if (isArray(key)) {
-      var normalizedKeyArray = key.map(function(k) { return this._normalizeKey(k, separator); }.bind(this));
+      var normalizedKeyArray = key.map(function (k) { return this._normalizeKey(k, separator); }.bind(this));
 
       return [].concat.apply([], normalizedKeyArray);
     } else {
@@ -345,7 +347,7 @@ Counterpart.prototype._normalizeKey = function(key, separator) {
   return this._registry.normalizedKeys[separator][key];
 };
 
-Counterpart.prototype._interpolate = function(entry, values) {
+Counterpart.prototype._interpolate = function (entry, values) {
   if (typeof entry !== 'string') {
     return entry;
   }
@@ -362,7 +364,7 @@ Counterpart.prototype._interpolate = function(entry, values) {
   }
 };
 
-Counterpart.prototype._resolve = function(locale, scope, object, subject, options) {
+Counterpart.prototype._resolve = function (locale, scope, object, subject, options) {
   options = options || {};
 
   if (options.resolve === false) {
@@ -391,7 +393,7 @@ Counterpart.prototype._resolve = function(locale, scope, object, subject, option
   return /^missing translation:/.test(result) ? null : result;
 };
 
-Counterpart.prototype._fallback = function(locale, scope, object, subject, options) {
+Counterpart.prototype._fallback = function (locale, scope, object, subject, options) {
   options = except(options, 'fallback');
 
   if (isArray(subject)) {
