@@ -24,7 +24,7 @@ function isPlainObject(val) {
   if (val === null) {
     return false;
   }
-  return Object.prototype.toString.call(val) === '[object Object]';
+  return Object.prototype.toString.call(val) === '[object Object]' || Object.prototype.toString.call(val) === '[object String]';
 }
 
 function isSymbol(key) {
